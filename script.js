@@ -3,36 +3,53 @@ socket = new WebSocket("wss://b.unavid.co.uk");
 latency = 0;
 uuid = 0;
 sessionViewers = 1
+sessionToken = "0"
 
-function writeStatus(message) {
-  document.getElementById("header").innerHTML = message
+const queryString = window.location.search;
+const parameters = new URLSearchParams(queryString);
+sessionToken = parameters.get("t")
+if (sessionToken == null) {
+    sessionToken = "0"
 }
+sessionToken = sessionToken.toLowerCase().replace(/[^a-z-]/g, "");
+console.log(sessionToken)
+//window.history.replaceState({}, document.title, "/" + sessionToken); // Looks nice but counterintuative
+
+/*
+Can redirect to different page on reload
+window.onbeforeunload = function() {
+    window.setTimeout(function () {
+        window.location = "player.html?t=" + sessionToken
+    }, 0);
+window.onbeforeunload = null; // necessary to prevent infinite loop, that kills your browser
+}*/
 
 function updateStatus() {
-    sessionToken = "correct-horse-battery-staple";
-    message = "This is " + sessionToken + ", you are one of " + sessionViewers + " viewers. Latency to server is " + latency + "ms"
-    writeStatus(message);
+
+    staticNew = "This is " + sessionToken + ", you are one of "
+    staticOld = document.getElementById("static").innerHTML
+    if (staticNew != staticOld) {
+        document.getElementById("static").innerHTML = staticNew;
+    }
+
+    document.getElementById("dynamic").innerHTML =  sessionViewers + " viewers. Latency to server is " + latency + "ms"
 }
 
 surpressEventTransmission = 1;
 
 $( document ).ready(function() {
-    jQuery(document.body).on('click', function(event) {
+    jQuery(document.body).on("click", function(event) {
         surpressEventTransmission = 0;
     });
 });
 
 socket.onopen = function(e) {
-    socket.send(JSON.stringify({
-        command: "requestCreateSession"
-    }));
-
-    writeStatus("Connected. Waiting for instructions from puppet master.")
+    //writeStatus("Connected. Waiting for instructions from puppet master.")
 };
 
 socket.onmessage = function(event) {
     message = JSON.parse(event.data)
-    //console.log(message)
+    console.log(message)
 
     var mainPlayer = document.getElementById("mainPlayer");
 
@@ -102,10 +119,16 @@ socket.onmessage = function(event) {
     }
     if (message.command == "setUUID") {
         uuid = message.uuid;
+        socket.send(JSON.stringify({
+            command: "joinSession",
+            token: sessionToken,
+        }));
     }
   if (message.command == "setMediaSource") {
-      mainPlayer.src = message.sourceurl;
+      mainPlayer.src = message.sourceURL;
       mainPlayer.pause();
+      sessionToken = message.token
+      window.history.replaceState({}, document.title, "/" + "player.html?t=" + sessionToken);
       updateStatus();
   }
   if (message.command == "pauseMedia") {
@@ -128,7 +151,7 @@ socket.onclose = function(event) {
   if (event.wasClean) {
     window.location.href = "index.html";
   } else {
-    writeStatus("Connection load. Reloading...")
+    //writeStatus("Connection load. Reloading...")
     //window.location.href = "index.html";
     mainPlayer.pause();
     mainPlayer.style.display  = "none"
