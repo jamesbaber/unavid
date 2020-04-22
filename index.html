@@ -1,17 +1,50 @@
 <!doctype html>
 <html lang="en-GB">
 	<head>
-		<title>Unavid</title>
+		<!-- Core meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-		<link rel="stylesheet" type="text/css" href="style.css">
+		<!-- Structured data -->
+		<title>Unavid</title>
+		<meta name="description" content="Watch films with your friends on Unavid.">
+		<meta name="author" content="James Baber">
+		<meta name="author" content="Edward Callow">
+		<link rel="icon" href="favicon.ico?v=1">
+
+		<!-- Style sheets -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="style/core_site_specific.css">
+
+		<!-- Silly script things -->
 		<script src="index.js"></script>
 	</head>
 	<body>
-		<h1>Welcome to Unavid.</h1>
+		<header>
+			<nav class="navbar navbar-dark fixed-top bg-dark">
+				<div class="container">
+					<a class="navbar brand" href="index.html">Unavid</a>
+				</div>
+			</nav>
+		</header>
+		<main>
+			<div class="container">
+				<h1>Welcome to Unavid.</h1>
 
-		<form action="player.html">
-			<input type="text" id="tokenEntry" name="t" placeholder="Enter Token or Leave Blank to Start a New Viewing" size="50">
-			<input type="submit" id="submitToken" value="Join Viewing">
-		</form>
+				<form action="player.html">
+					<input type="text" id="tokenEntry" name="t" placeholder="Enter Token or Leave Blank to Start a New Viewing" size="50">
+					<input type="submit" id="submitToken" value="Join Viewing">
+				</form>
+			</div>
+		</main>
+		<footer class="footer mt-auto fixed-bottom">
+			<div class="container">
+				By 014400/28.
+			</div>
+		</footer>
+		<!-- jQuery, Popper.js, and Bootstrap JS -->
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 	</body>
 </html>
