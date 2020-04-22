@@ -24,6 +24,15 @@ window.onbeforeunload = function() {
 window.onbeforeunload = null; // necessary to prevent infinite loop, that kills your browser
 }*/
 
+function stringIsJSON(string) {
+    try {
+        JSON.parse(string);
+    } catch (e) {
+        return(false);
+    }
+    return(true);
+}
+
 function updateStatus() {
 	// Update the session token span if it's changed
     oldSessionToken = document.getElementById("sessionToken").innerHTML;
@@ -51,7 +60,10 @@ socket.onopen = function(e) {
 };
 
 socket.onmessage = function(event) {
+	if (stringIsJSON(event.data)) {
     message = JSON.parse(event.data)
+
+
     if (message.command != "echo") {
         console.log(message)
     }
@@ -163,6 +175,7 @@ socket.onmessage = function(event) {
   if (message.command == "seek") {
       mainPlayer.currentTime = message.time;
   }
+}
 };
 
 socket.onclose = function(event) {
