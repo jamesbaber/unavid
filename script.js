@@ -49,11 +49,15 @@ socket.onopen = function(e) {
 
 socket.onmessage = function(event) {
     message = JSON.parse(event.data)
-    console.log(message)
+    if (message.command != "echo") {
+        console.log(message)
+    }
 
     var mainPlayer = document.getElementById("mainPlayer");
 
     mainPlayer.onpause = function(e) {
+        console.log("Pause event")
+
         if (! surpressEventTransmission) {
             socket.send(JSON.stringify({
                 uuid: uuid,
@@ -68,6 +72,8 @@ socket.onmessage = function(event) {
 
     delayedPlay = 0
     mainPlayer.onplay = function(e) {
+        console.log("Play event")
+
         if (! surpressEventTransmission) {
             if (delayedPlay == 1) {
                 delayedPlay = 0;
@@ -97,6 +103,8 @@ socket.onmessage = function(event) {
     };
 
     mainPlayer.onseeked = function() {
+        console.log("Seek event")
+
         if (! surpressEventTransmission) {
         socket.send(JSON.stringify({
             uuid: uuid,
