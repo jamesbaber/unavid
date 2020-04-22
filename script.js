@@ -26,7 +26,7 @@ window.onbeforeunload = null; // necessary to prevent infinite loop, that kills 
 
 function updateStatus() {
 
-    staticNew = "This is " + sessionToken + ", you are one of "
+    staticNew = "This is '" + sessionToken + "', you are one of "
     staticOld = document.getElementById("static").innerHTML
     if (staticNew != staticOld) {
         document.getElementById("static").innerHTML = staticNew;
