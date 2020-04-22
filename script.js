@@ -28,7 +28,7 @@ function updateStatus() {
 	// Update the session token span if it's changed
     oldSessionToken = document.getElementById("sessionToken").innerHTML;
     if (oldSessionToken != sessionToken) {
-        document.getElementById("static").innerHTML = sessionToken;
+        document.getElementById("sessionToken").innerHTML = sessionToken;
     }
 
 	// Update the session viewer count
