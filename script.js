@@ -32,7 +32,7 @@ function updateStatus() {
     }
 
 	// Update the session viewer count
-	document.getElementById("sessionViewers").innerHTML = sessionViewers;
+	document.getElementById("sessionViewers").innerHTML = sessionViewers - 1;
 
 	// Update the latency
 	document.getElementById("sessionLatency").innerHTML = latency;
