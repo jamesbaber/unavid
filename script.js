@@ -12,7 +12,7 @@ if (sessionToken == null) {
     sessionToken = "0"
 }
 sessionToken = sessionToken.toLowerCase().replace(/[^a-z-]/g, "");
-console.log(sessionToken)
+//console.log(sessionToken)
 //window.history.replaceState({}, document.title, "/" + sessionToken); // Looks nice but counterintuative
 
 /*
@@ -126,8 +126,15 @@ socket.onmessage = function(event) {
     }
   if (message.command == "setMediaSource") {
       mainPlayer.src = message.sourceURL;
-      mainPlayer.pause();
       sessionToken = message.token
+
+          mainPlayer.currentTime = message.time;
+          if (message.state == 0) {
+              mainPlayer.pause()
+          } else if (message.state == 1) {
+              mainPlayer.play()
+          }
+          console.log(mainPlayer.readyState)
       window.history.replaceState({}, document.title, "/" + "player.html?t=" + sessionToken);
       updateStatus();
   }
@@ -149,7 +156,9 @@ socket.onmessage = function(event) {
 
 socket.onclose = function(event) {
   if (event.wasClean) {
-    window.location.href = "index.html";
+    setTimeout(function() {
+        location.reload();
+    }, 1000)
   } else {
     //writeStatus("Connection load. Reloading...")
     //window.location.href = "index.html";
@@ -163,4 +172,7 @@ socket.onclose = function(event) {
 };
 
 socket.onerror = function(error) {
+    setTimeout(function() {
+        location.reload();
+    }, 1000)
 };
