@@ -61,15 +61,21 @@ socket.onmessage = function(event) {
                   command: "requestPlayMedia",
                   time: mainPlayer.currentTime,
             }))
-            surpressEventTransmission = 0;
 
             e.preventDefault()
+            surpressEventTransmission = 1;
+            mainPlayer.pause()
+
+
+            var delay = (latency * 2);
+
             setTimeout(function() {
                 delayedPlay = 1;
                 if (socket.readyState === socket.OPEN) {
                     mainPlayer.play();
+                    surpressEventTransmission = 0;
                 }
-            }, (latency * 2) / 1000)
+            }, delay)
         }
     };
 
