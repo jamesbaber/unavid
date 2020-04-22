@@ -25,14 +25,17 @@ window.onbeforeunload = null; // necessary to prevent infinite loop, that kills 
 }*/
 
 function updateStatus() {
-
-    staticNew = "This is '" + sessionToken + "', you are one of "
-    staticOld = document.getElementById("static").innerHTML
-    if (staticNew != staticOld) {
-        document.getElementById("static").innerHTML = staticNew;
+	// Update the session token span if it's changed
+    oldSessionToken = document.getElementById("sessionToken").innerHTML;
+    if (oldSessionToken != sessionToken) {
+        document.getElementById("static").innerHTML = sessionToken;
     }
 
-    document.getElementById("dynamic").innerHTML =  sessionViewers + " viewers. Latency to server is " + latency + "ms"
+	// Update the session viewer count
+	document.getElementById("sessionViewers").innerHTML = sessionViewers;
+
+	// Update the latency
+	document.getElementById("sessionLatency").innerHTML = latency;
 }
 
 surpressEventTransmission = 1;
