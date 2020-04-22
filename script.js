@@ -1,26 +1,26 @@
 socket = new WebSocket("wss://b.unavid.co.uk");
 
+latency = 0;
+uuid = 0;
+sessionViewers = 1
+
 function writeStatus(message) {
   document.getElementById("header").innerHTML = message
 }
 
 function updateStatus() {
     sessionToken = "correct-horse-battery-staple";
-    sessionViewerCount = 69;
-    message = "This is " + sessionToken + ", you are one of " + sessionViewerCount + " viewers."
+    message = "This is " + sessionToken + ", you are one of " + sessionViewers + " viewers. Latency to server is " + latency + "ms"
     writeStatus(message);
 }
 
-// Deduplication and echo removal
-ignoreCommand = 0;
-function setIgnore() {
-    ignoreCommand = 1;
-    setTimeout(function() {
-        ignoreCommand = 0;
-    }, 200)
-}
+surpressEventTransmission = 1;
 
-
+$( document ).ready(function() {
+    jQuery(document.body).on('click', function(event) {
+        surpressEventTransmission = 0;
+    });
+});
 
 socket.onopen = function(e) {
     socket.send(JSON.stringify({
@@ -32,54 +32,88 @@ socket.onopen = function(e) {
 
 socket.onmessage = function(event) {
     message = JSON.parse(event.data)
+    //console.log(message)
 
     var mainPlayer = document.getElementById("mainPlayer");
 
-    mainPlayer.onpause = function() {
-        if (ignoreCommand == 0) {
+    mainPlayer.onpause = function(e) {
+        if (! surpressEventTransmission) {
             socket.send(JSON.stringify({
-                command: "requestPauseMedia"
+                uuid: uuid,
+                command: "requestPauseMedia",
+                time: mainPlayer.currentTime,
             }));
+            surpressEventTransmission = 0;
+
+
         }
     };
 
-    mainPlayer.onplay = function() {
-        if (ignoreCommand == 0) {
+    delayedPlay = 0
+    mainPlayer.onplay = function(e) {
+        if (! surpressEventTransmission) {
+            if (delayedPlay == 1) {
+                delayedPlay = 0;
+                return
+            }
             socket.send(JSON.stringify({
-                  command: "requestPlayMedia"
+                uuid: uuid,
+                  command: "requestPlayMedia",
+                  time: mainPlayer.currentTime,
             }))
+            surpressEventTransmission = 0;
+
+            e.preventDefault()
+            setTimeout(function() {
+                delayedPlay = 1;
+                if (socket.readyState === socket.OPEN) {
+                    mainPlayer.play();
+                }
+            }, (latency * 2) / 1000)
         }
     };
 
     mainPlayer.onseeked = function() {
-        if (ignoreCommand == 0) {
-            socket.send(JSON.stringify({
-                command: "requestSeek",
-                time: mainPlayer.currentTime,
-            }));
+        if (! surpressEventTransmission) {
+        socket.send(JSON.stringify({
+            uuid: uuid,
+            command: "requestSeek",
+            time: mainPlayer.currentTime,
+        }));
+        surpressEventTransmission = 0;
         }
     };
 
 
 
-
+    if (message.command == "echo") {
+        socket.send(JSON.stringify({
+            command: "echoAck"
+        }))
+        latency = message.previousLatency,
+        sessionViewers = message.sessionViewers
+        updateStatus();
+    }
+    if (message.command == "setUUID") {
+        uuid = message.uuid;
+    }
   if (message.command == "setMediaSource") {
-      setIgnore();
       mainPlayer.src = message.sourceurl;
       mainPlayer.pause();
       updateStatus();
   }
   if (message.command == "pauseMedia") {
+      surpressEventTransmission = 1;
+      mainPlayer.currentTime = message.time;
       mainPlayer.pause();
-      setIgnore();
   }
   if (message.command == "playMedia") {
+      surpressEventTransmission = 1;
+      mainPlayer.currentTime = message.time;
       mainPlayer.play();
-      setIgnore();
   }
 
   if (message.command == "seek") {
-      setIgnore();
       mainPlayer.currentTime = message.time;
   }
 };
@@ -88,8 +122,14 @@ socket.onclose = function(event) {
   if (event.wasClean) {
     window.location.href = "index.html";
   } else {
-    writeStatus("Connection error")
+    writeStatus("Connection load. Reloading...")
     //window.location.href = "index.html";
+    mainPlayer.pause();
+    mainPlayer.style.display  = "none"
+
+    setTimeout(function() {
+        location.reload();
+    }, 1000)
   }
 };
 
