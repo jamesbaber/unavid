@@ -63,6 +63,7 @@ $( document ).ready(function() {
 	jQuery(document.body).on("click", function(event) {
 		// Set flag to allow video events to be transmitted to server
 		surpressEventTransmission = 0;
+		console.log("click")
 	});
 });
 
@@ -100,6 +101,7 @@ socket.onmessage = function(event) {
 		};
 
 		// Media player play event
+		delayedPlay = 0;
 		mainPlayer.onplay = function(e) {
 			console.log("Play event")
 			// If event was generated locally by user
