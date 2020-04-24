@@ -184,6 +184,7 @@ socket.onmessage = function(event) {
 		if (message.command == "setMediaSource") {
 			// Set session information
 			mainPlayer.src = message.sourceURL;
+			mainPlayer.preload = "auto";
 			sessionToken = message.token
 
 			// Set initial media time
