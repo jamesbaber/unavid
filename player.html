@@ -10,6 +10,7 @@
 		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Expires" content="0">
+		<script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
 	</head>
 	<body>
 		<div id="header">
@@ -23,9 +24,12 @@
 
 		<br />
 
-		<video id="mainPlayer" controls="" width="600">
-			<source src="" type="video/mp4">
-		</video>
+		<video id="mainPlayer" playsinline controls data-poster="/poster.jpg">
+			<source src="" type="video/mp4" />
+		  
+			<!-- Captions are optional -->
+			<!--<track kind="captions" label="English captions" src="/path/to/captions.vtt" srclang="en" default />-->
+		  </video>
 
 		<br />
 
