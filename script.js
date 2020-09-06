@@ -1,5 +1,4 @@
-socket = new WebSocket("wss://b.unavid.co.uk");
-//socket = new WebSocket("ws://192.168.2.80:8080");
+socket = new WebSocket("ws://b.unavid.co.uk");
 
 latency = 0;
 uuid = 0;
