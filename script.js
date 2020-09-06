@@ -1,4 +1,5 @@
 socket = new WebSocket("ws://b.unavid.co.uk");
+//socket = new WebSocket("ws://192.168.2.80:8080");
 
 latency = 0;
 uuid = 0;
@@ -53,6 +54,8 @@ function requestMediaChange() {
 
 // Set the status line above the video
 function updateHeaderMessage() {
+	document.getElementById("headerMessage").style.visibility = "visible";
+
 	// Get current session token from page
 	oldSessionToken = document.getElementById("sessionToken").innerHTML;
 	// Only update if it's changed to stop the deselection issue
@@ -69,7 +72,7 @@ function updateHeaderMessage() {
 
 // When connection opens
 socket.onopen = function(e) {
-	document.getElementById("headerMessage").style.visibility = "visible";
+	console.log("Connected")
 };
 
 var playing = 0;

@@ -22,9 +22,9 @@
 			<button class="button" onclick="UIPlayPause()">⏯︎ Play/Pause</button>
 
 			<!-- Hidden until backend connection success -->
-			<div id="headerMessage" style="visibility: hidden">
+			<span id="headerMessage" style="visibility: hidden">
 				Welcome to <span id="sessionToken"></span>. There are <span id="sessionViewers"></span> other people watching. The current latency to the server is <span id="sessionLatency"></span>ms.
-			</div>
+			</span>
 		</div>
 
 		<video id="mainPlayer" playsinline data-poster="/poster.jpg">
@@ -36,7 +36,7 @@
 
 		<br />
 
-		<input type="text" id="newMediaInput" placeholder="https://www.dropbox.com/s/edkwr30wctnqsox/2.mp4?dl=1" size="50"></input>
+		<input type="text" id="newMediaInput" placeholder="site.com/file.mp4" size="50"></input>
 		<button class="button" type="button" onclick="requestMediaChange()">Change Media</input>
 	</body>
 </html>
