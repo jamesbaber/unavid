@@ -1,4 +1,5 @@
 socket = new WebSocket("wss://b.unavid.co.uk");
+//socket = new WebSocket("ws://192.168.2.80:8080");
 
 latency = 0;
 uuid = 0;
@@ -41,6 +42,16 @@ function stringIsJSON(string) {
 	return(true);
 }
 
+function requestMediaChange() {
+	var newSourceURL = document.getElementById("newMediaInput").innerHTML;
+
+	socket.send(JSON.stringify({
+		uuid: uuid,
+		command: "requestMediaChange",
+		sourceURL: newSourceURL,
+	}));
+}
+
 // Set the status line above the video
 function updateHeaderMessage() {
 	// Get current session token from page
@@ -57,20 +68,55 @@ function updateHeaderMessage() {
 	document.getElementById("sessionLatency").innerHTML = latency;
 }
 
-surpressEventTransmission = 1;
-// If click event occurs anywhere on body
-$( document ).ready(function() {
-	jQuery(document.body).on("click", function(event) {
-		// Set flag to allow video events to be transmitted to server
-		surpressEventTransmission = 0;
-		console.log("click")
-	});
-});
-
 // When connection opens
 socket.onopen = function(e) {
 	document.getElementById("headerMessage").style.visibility = "visible";
 };
+
+var playing = 0;
+
+function UIPlayPause() {
+	console.log("Play/pause event")
+
+	if (playing == 0) {
+		// Send event to server
+		socket.send(JSON.stringify({
+			uuid: uuid,
+			command: "requestPlayMedia",
+			time: mainPlayer.currentTime,
+		}));
+
+		playing = 1;
+	} else {
+		// Send event to server
+		socket.send(JSON.stringify({
+			uuid: uuid,
+			command: "requestPauseMedia",
+			time: mainPlayer.currentTime,
+		}));
+
+		playing = 0;
+	}
+}
+
+function UIGoToStart() {
+	mainPlayer.currentTime = 0;
+	console.log("Seek event")
+	// Transmit event to server
+	socket.send(JSON.stringify({
+		uuid: uuid,
+		command: "requestSeek",
+		time: mainPlayer.currentTime,
+	}));
+
+	socket.send(JSON.stringify({
+		uuid: uuid,
+		command: "requestPauseMedia",
+		time: mainPlayer.currentTime,
+	}));
+
+	playing = 0;
+}
 
 socket.onmessage = function(event) {
 	// Check string is safe to parse before parsing into JSON format
@@ -84,77 +130,6 @@ socket.onmessage = function(event) {
 
 		// Get handle on main player.
 		var mainPlayer = document.getElementById("mainPlayer");
-
-		// Media player pause event
-		mainPlayer.onpause = function(e) {
-			console.log("Pause event")
-
-			// If event was generated locally by user
-			if (!surpressEventTransmission) {
-				// Transmit event to server
-				socket.send(JSON.stringify({
-					uuid: uuid,
-					command: "requestPauseMedia",
-					time: mainPlayer.currentTime,
-				}));
-			}
-		};
-
-		// Media player play event
-		delayedPlay = 0;
-		mainPlayer.onplay = function(e) {
-			console.log("Play event")
-			// If event was generated locally by user
-			if (! surpressEventTransmission) {
-				// If the delay period before local media playback has elapsed
-				if (delayedPlay == 1) {
-					// Reset flag
-					delayedPlay = 0;
-					// Continue with event as usual
-					return;
-				}
-
-				// Try and stop the media player playing but probably won't work
-				e.preventDefault()
-				// Make sure the following pause isn't transmitted
-				surpressEventTransmission = 1;
-				// Pause temporarily
-				mainPlayer.pause()
-
-				// Wait 2x the connection latency before playing the video locally
-				var delay = (latency * 2);
-				setTimeout(function() {
-					delayedPlay = 1;
-					// If the socket is connected
-					if (socket.readyState === socket.OPEN) {
-						// Play locally
-						mainPlayer.play();
-						surpressEventTransmission = 0; // not sure about this
-					}
-				}, delay)
-
-				// Send event to server
-				socket.send(JSON.stringify({
-					uuid: uuid,
-					command: "requestPlayMedia",
-					time: mainPlayer.currentTime,
-				}));
-			}
-		};
-
-		// Media player seek event
-		mainPlayer.onseeked = function() {
-			console.log("Seek event")
-			// If event was generated locally by user
-			if (!surpressEventTransmission) {
-				// Transmit event to server
-				socket.send(JSON.stringify({
-					uuid: uuid,
-					command: "requestSeek",
-					time: mainPlayer.currentTime,
-				}));
-			}
-		};
 
 		// If server sent an echo request
 		if (message.command == "echo") {
@@ -210,8 +185,7 @@ socket.onmessage = function(event) {
 
 		// Pause media
 		if (message.command == "pauseMedia") {
-			// Ensure the pause event doesn't get sent back out to the server - it already knows!
-			surpressEventTransmission = 1;
+
 
 			// Set time and stop media playback
 			mainPlayer.currentTime = message.time;
@@ -220,8 +194,7 @@ socket.onmessage = function(event) {
 
 		// Play media
 		if (message.command == "playMedia") {
-			// Ensure the play event doesn't get sent back out to the server - it already knows!
-			surpressEventTransmission = 1;
+
 
 			// Set time and start media playback
 			mainPlayer.currentTime = message.time;

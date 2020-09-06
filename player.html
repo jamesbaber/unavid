@@ -6,6 +6,8 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script src="script.js"></script>
 
+		<link rel="stylesheet" type="text/css" href="player.css">
+
 		<!-- For development. Mobile caches too aggressively. -->
 		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 		<meta http-equiv="Pragma" content="no-cache">
@@ -14,7 +16,10 @@
 	</head>
 	<body>
 		<div id="header">
-			<a href="/">Exit Viewing</a>
+			<button class="button">← Exit Viewing</button>
+
+			<button class="button" onclick="UIGoToStart()">⏮︎ Go to start</button>
+			<button class="button" onclick="UIPlayPause()">⏯︎ Play/Pause</button>
 
 			<!-- Hidden until backend connection success -->
 			<div id="headerMessage" style="visibility: hidden">
@@ -22,10 +27,8 @@
 			</div>
 		</div>
 
-		<br />
-
-		<video id="mainPlayer" playsinline controls data-poster="/poster.jpg">
-			<source src="" type="video/mp4" />
+		<video id="mainPlayer" playsinline data-poster="/poster.jpg">
+			<source src="https://www.dropbox.com/s/edkwr30wctnqsox/2.mp4?dl=1" type="video/mp4" />
 		  
 			<!-- Captions are optional -->
 			<!--<track kind="captions" label="English captions" src="/path/to/captions.vtt" srclang="en" default />-->
@@ -33,7 +36,7 @@
 
 		<br />
 
-		<input type="text" id="newMediaInput" placeholder="http://website.com/video.mp4" size="50"></input>
-		<input type="button" value="Change Media" onclick="requestMediaChange()"></input>
+		<input type="text" id="newMediaInput" placeholder="https://www.dropbox.com/s/edkwr30wctnqsox/2.mp4?dl=1" size="50"></input>
+		<button class="button" type="button" onclick="requestMediaChange()">Change Media</input>
 	</body>
 </html>
