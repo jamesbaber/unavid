@@ -120,6 +120,17 @@ function UIGoToStart() {
 	playing = 0;
 }
 
+function UIChangeMedia() {
+	console.log("Change media")
+	var newURL = document.getElementById("newMediaInput").value;
+
+	socket.send(JSON.stringify({
+		uuid: uuid,
+		command: "requestNewMediaSource",
+		sourceURL: newURL,
+	}));
+}
+
 socket.onmessage = function(event) {
 	// Check string is safe to parse before parsing into JSON format
 	if (stringIsJSON(event.data)) {
