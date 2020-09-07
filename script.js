@@ -1,19 +1,30 @@
 function SelectText(element) {
-    var doc = document;
-    var text = doc.getElementById(element);    
-    if (doc.body.createTextRange) { // ms
-        var range = doc.body.createTextRange();
+
+    var text = document.getElementById(element);    
+
+	if (document.body.createTextRange) { // IE
+        var range = document.body.createTextRange();
         range.moveToElementText(text);
-        range.select();
-    } else if (window.getSelection) {
+		range.select();
+    } else if (window.getSelection) { // Other browsers
         var selection = window.getSelection();
-        var range = doc.createRange();
+        var range = document.createRange();
         range.selectNodeContents(text);
         selection.removeAllRanges();
         selection.addRange(range);
-        
 	}
+	
+	// Copy the text to the clipboard
 	document.execCommand("copy");
+
+	// Deselect the text
+	if (document.body.createTextRange) { // ms
+		// ?
+	} else {
+		setTimeout(function() {
+			selection.removeAllRanges();
+		}, 200)
+	}
 }
 
 
@@ -95,8 +106,8 @@ function updateHeaderMessage() {
 
 $(function(){
 
-	const progress = document.querySelector('.progress')
-	const handle = document.querySelector('.handle')
+	const progress = document.querySelector(".progress")
+	const handle = document.querySelector(".handle")
 
 	window.seekTo = function(e) {
 		const percent = e.target.value
@@ -112,7 +123,7 @@ $(function(){
 	}
 
 	seekTo({
-		target: document.querySelector('#seek-range')
+		target: document.querySelector("#seek-range")
 	});
 })
 
