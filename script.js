@@ -118,7 +118,11 @@ $(function(){
 })
 
 setInterval(function() {
-	document.getElementById("seek-range").value = (mainPlayer.currentTime / mainPlayer.duration) * 100;
+	if (mainPlayer.duration > 0) {
+		document.getElementById("seek-range").value = (mainPlayer.currentTime / mainPlayer.duration) * 100;
+	} else {
+		document.getElementById("seek-range").value = 0;
+	}
 }, 500);
 
 
