@@ -101,6 +101,11 @@ function updateHeaderMessage() {
 	// Update the latency
 	latency = Math.floor(latency)
 	document.getElementById("sessionLatency").innerHTML = latency;
+	if (latency < 300) {
+		document.getElementById("sessionLatency").style = "color: green";
+	} else {
+		document.getElementById("sessionLatency").style = "color: red";
+	}
 }
 
 
