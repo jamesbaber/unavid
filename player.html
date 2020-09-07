@@ -30,7 +30,8 @@
 		</div>
 
 		<div id="player" style="visibility: hidden">
-			<input id='seek-range'value=0 step=0.15625 type='range' oninput={seekTo(event)} ></input>
+			<!-- step=0.15625 for one step per pixel at 640 width -->
+			<input id='seek-range' value=0 step=0.3 type='range' oninput={seekTo(event)} ></input>
 			<br />
 			<video id="mainPlayer" playsinline data-poster="/poster.jpg" width="640">
 				<source type="video/mp4" />
