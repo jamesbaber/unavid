@@ -102,13 +102,12 @@ $(function(){
 		const percent = e.target.value
 
 		var newTime = (percent / 100) * mainPlayer.duration;
-		console.log(percent)
-		mainPlayer.currentTime = newTime
+		//mainPlayer.currentTime = newTime
 
 		socket.send(JSON.stringify({
 			uuid: uuid,
 			command: "requestSeek",
-			time: mainPlayer.currentTime,
+			time: newTime,
 		}));
 	}
 
@@ -239,11 +238,11 @@ socket.onmessage = function(event) {
 			// Set player state
 			if (message.state == 0) {
 				mainPlayer.pause()
+				playing = 0;
 			} else if (message.state == 1) {
 				mainPlayer.play()
+				playing = 1;
 			}
-			// Ensure the event doesn't get sent back out to the server - it already knows!
-			surpressEventTransmission = 1;
 
 			// Set the window URL get parameter to match the correct token as if the form was filled out correctly
 			window.history.replaceState({}, document.title, "/" + "player.html?t=" + sessionToken);
@@ -259,6 +258,7 @@ socket.onmessage = function(event) {
 			// Set time and stop media playback
 			mainPlayer.currentTime = message.time;
 			mainPlayer.pause();
+			playing = 0;
 		}
 
 		// Play media
@@ -268,6 +268,7 @@ socket.onmessage = function(event) {
 			// Set time and start media playback
 			mainPlayer.currentTime = message.time;
 			mainPlayer.play();
+			playing = 1;
 		}
 
 		// Seek to new time
