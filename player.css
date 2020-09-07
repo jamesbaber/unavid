@@ -16,3 +16,7 @@ button:focus {
     border: 0px solid #FFFFFF; 
     outline: 0;
 }
+
+#seek-range {
+    width: 640px;
+}

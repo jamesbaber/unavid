@@ -1,3 +1,22 @@
+function SelectText(element) {
+    var doc = document;
+    var text = doc.getElementById(element);    
+    if (doc.body.createTextRange) { // ms
+        var range = doc.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+    } else if (window.getSelection) {
+        var selection = window.getSelection();
+        var range = doc.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+	}
+	document.execCommand("copy");
+}
+
+
 socket = new WebSocket("wss://b.unavid.co.uk");
 //socket = new WebSocket("ws://192.168.2.80:8080");
 
@@ -55,6 +74,8 @@ function requestMediaChange() {
 // Set the status line above the video
 function updateHeaderMessage() {
 	document.getElementById("headerMessage").style.visibility = "visible";
+	document.getElementById("player").style.visibility = "visible";
+	document.getElementById("controls").style.visibility = "visible";
 
 	// Get current session token from page
 	oldSessionToken = document.getElementById("sessionToken").innerHTML;
@@ -67,8 +88,33 @@ function updateHeaderMessage() {
 	document.getElementById("sessionViewers").innerHTML = sessionViewers - 1;
 
 	// Update the latency
+	latency = Math.floor(latency)
 	document.getElementById("sessionLatency").innerHTML = latency;
 }
+
+
+$(function(){
+
+	const progress = document.querySelector('.progress')
+	const handle = document.querySelector('.handle')
+
+	window.seekTo = function(e) {
+		const percent = e.target.value
+
+		var newTime = (percent / 100) * mainPlayer.duration;
+		console.log(percent)
+		mainPlayer.currentTime = newTime
+	}
+
+	seekTo({
+		target: document.querySelector('#seek-range')
+	});
+})
+
+setInterval(function() {
+	document.getElementById("seek-range").value = (mainPlayer.currentTime / mainPlayer.duration) * 100;
+}, 500);
+
 
 // When connection opens
 socket.onopen = function(e) {
