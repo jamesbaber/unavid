@@ -234,11 +234,19 @@ socket.onmessage = function(event) {
 		if (message.command == "setUUID") {
 			uuid = message.uuid;
 
-			// Reply with join session request and token
-			socket.send(JSON.stringify({
-				command: "joinSession",
-				token: sessionToken,
-			}));
+			console.log("Got UUID from server. Need focus before session can start.")
+			// Create focus-grabbing screen
+
+			document.getElementById("warning").innerHTML = "Click here to get going!"
+			warnEv = document.getElementById("warning").addEventListener("click", function() {
+				socket.send(JSON.stringify({
+					command: "joinSession",
+					token: sessionToken,
+				}));
+				document.getElementById("warning").innerHTML = ""
+				document.getElementById("warning").removeEventListener("click", warnEv)
+			})
+			
 		}
 
 		// Set the media source - first main update from server. May need to be split out later
@@ -256,8 +264,15 @@ socket.onmessage = function(event) {
 				mainPlayer.pause()
 				playing = 0;
 			} else if (message.state == 1) {
-				mainPlayer.play()
-				playing = 1;
+				// Set time and start media playback
+				mainPlayer.currentTime = message.time;
+				mainPlayer.play().then(function() {
+					playing = 1;
+				}, function() {
+					playing = 0;
+					//alert("Playback paused. Tab must get focus.")
+					//location.reload();
+				})
 			}
 
 			// Set the window URL get parameter to match the correct token as if the form was filled out correctly
@@ -283,8 +298,13 @@ socket.onmessage = function(event) {
 
 			// Set time and start media playback
 			mainPlayer.currentTime = message.time;
-			mainPlayer.play();
-			playing = 1;
+			mainPlayer.play().then(function() {
+				playing = 1;
+			}, function() {
+				playing = 0;
+				//alert("Playback paused. Tab must get focus.")
+				//location.reload();
+			})
 		}
 
 		// Seek to new time
