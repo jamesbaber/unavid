@@ -122,7 +122,7 @@ setInterval(function() {
 	} else {
 		document.getElementById("seek-range").value = 0;
 	}
-}, 500);
+}, 50);
 
 
 // When connection opens
