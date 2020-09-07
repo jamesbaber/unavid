@@ -8,11 +8,13 @@ function pasteToken() {
 
             // Paste the clipboard contents into the text box
             document.getElementById("tokenEntry").value = value.trim();
+        
+            document.getElementById("tokenForm").submit();
 
         } else {
 
             // The clipboard doesn't contain a token
-            
+
         }
     });
 }
