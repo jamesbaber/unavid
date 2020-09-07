@@ -117,7 +117,7 @@ $(function(){
 	window.seekTo = function(e) {
 		const percent = e.target.value
 
-		var newTime = (percent / 100) * mainPlayer.duration;
+		var newTime = Math.round(((percent / 100) * mainPlayer.duration) * 1000) / 1000;
 		//mainPlayer.currentTime = newTime
 
 		socket.send(JSON.stringify({
