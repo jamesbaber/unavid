@@ -104,6 +104,12 @@ $(function(){
 		var newTime = (percent / 100) * mainPlayer.duration;
 		console.log(percent)
 		mainPlayer.currentTime = newTime
+
+		socket.send(JSON.stringify({
+			uuid: uuid,
+			command: "requestSeek",
+			time: mainPlayer.currentTime,
+		}));
 	}
 
 	seekTo({
