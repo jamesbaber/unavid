@@ -108,6 +108,7 @@ function updateHeaderMessage() {
 	}
 }
 
+hadFocus = 0;
 
 $(function(){
 
@@ -115,16 +116,18 @@ $(function(){
 	const handle = document.querySelector(".handle")
 
 	window.seekTo = function(e) {
-		const percent = e.target.value
+		
+		if (hadFocus == 1) {
+			const percent = e.target.value;
+			var newTime = Math.round(((percent / 100) * mainPlayer.duration) * 1000) / 1000;
+			//mainPlayer.currentTime = newTime
 
-		var newTime = Math.round(((percent / 100) * mainPlayer.duration) * 1000) / 1000;
-		//mainPlayer.currentTime = newTime
-
-		socket.send(JSON.stringify({
-			uuid: uuid,
-			command: "requestSeek",
-			time: newTime,
-		}));
+			socket.send(JSON.stringify({
+				uuid: uuid,
+				command: "requestSeek",
+				time: newTime,
+			}));
+		}
 	}
 
 	seekTo({
@@ -243,6 +246,7 @@ socket.onmessage = function(event) {
 					command: "joinSession",
 					token: sessionToken,
 				}));
+				hadFocus = 1;
 				document.getElementById("warning").innerHTML = ""
 				document.getElementById("warning").removeEventListener("click", warnEv)
 			})
@@ -316,6 +320,7 @@ socket.onmessage = function(event) {
 
 // Reload page in 0-2 seconds to reduce server load
 function reloadPageStaggered() {
+	console.log("Staggered reload procedure")
 	document.getElementById("headerMessage").style.visibility = "hidden";
 
 	setTimeout(function() {
@@ -325,6 +330,7 @@ function reloadPageStaggered() {
 
 // If the socket closes
 socket.onclose = function(event) {
+	console.log(event)
 	if (event.wasClean) {
 
 	} else {
@@ -340,5 +346,6 @@ socket.onclose = function(event) {
 
 // On socket error
 socket.onerror = function(error) {
+	console.log("Socket error")
 	reloadPageStaggered();
 };
