@@ -240,6 +240,11 @@ socket.onmessage = function(event) {
 			console.log("Got UUID from server. Need focus before session can start.")
 			// Create focus-grabbing screen
 
+			var keepAliveBodge = setInterval(function() {
+				socket.send(JSON.stringify({
+					command: "echoBodge"
+				}));
+			}, 5000)
 			document.getElementById("warning").innerHTML = "Click here to get going!"
 			warnEv = document.getElementById("warning").addEventListener("click", function() {
 				socket.send(JSON.stringify({
@@ -249,6 +254,7 @@ socket.onmessage = function(event) {
 				hadFocus = 1;
 				document.getElementById("warning").innerHTML = ""
 				document.getElementById("warning").removeEventListener("click", warnEv)
+				clearInterval(keepAliveBodge);
 			})
 			
 		}
