@@ -181,12 +181,14 @@ function UIGoToStart() {
 	// Transmit event to server
 	socket.send(JSON.stringify({
 		uuid: uuid,
+		token: token,
 		command: "requestSeek",
 		time: mainPlayer.currentTime,
 	}));
 
 	socket.send(JSON.stringify({
 		uuid: uuid,
+		token: token,
 		command: "requestPauseMedia",
 		time: mainPlayer.currentTime,
 	}));
@@ -200,6 +202,7 @@ function UIChangeMedia() {
 
 	socket.send(JSON.stringify({
 		uuid: uuid,
+		token: token,
 		command: "requestNewMediaSource",
 		sourceURL: newURL,
 	}));
