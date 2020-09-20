@@ -77,6 +77,7 @@ function requestMediaChange() {
 
 	socket.send(JSON.stringify({
 		uuid: uuid,
+		token: sessionToken,
 		command: "requestMediaChange",
 		sourceURL: newSourceURL,
 	}));
@@ -124,6 +125,7 @@ $(function(){
 
 			socket.send(JSON.stringify({
 				uuid: uuid,
+				token: sessionToken,
 				command: "requestSeek",
 				time: newTime,
 			}));
@@ -158,6 +160,7 @@ function UIPlayPause() {
 		// Send event to server
 		socket.send(JSON.stringify({
 			uuid: uuid,
+			token: sessionToken,
 			command: "requestPlayMedia",
 			time: mainPlayer.currentTime,
 		}));
@@ -167,6 +170,7 @@ function UIPlayPause() {
 		// Send event to server
 		socket.send(JSON.stringify({
 			uuid: uuid,
+			token: sessionToken,
 			command: "requestPauseMedia",
 			time: mainPlayer.currentTime,
 		}));
@@ -181,14 +185,14 @@ function UIGoToStart() {
 	// Transmit event to server
 	socket.send(JSON.stringify({
 		uuid: uuid,
-		token: token,
+		token: sessionToken,
 		command: "requestSeek",
 		time: mainPlayer.currentTime,
 	}));
 
 	socket.send(JSON.stringify({
 		uuid: uuid,
-		token: token,
+		token: sessionToken,
 		command: "requestPauseMedia",
 		time: mainPlayer.currentTime,
 	}));
@@ -202,7 +206,7 @@ function UIChangeMedia() {
 
 	socket.send(JSON.stringify({
 		uuid: uuid,
-		token: token,
+		token: sessionToken,
 		command: "requestNewMediaSource",
 		sourceURL: newURL,
 	}));
