@@ -20,3 +20,7 @@ button:focus {
 #seek-range {
     width: 640px;
 }
+
+#mainPlayer {
+    background-color: rgba(0, 0, 0, 0);
+}
