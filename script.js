@@ -212,6 +212,9 @@ function UIChangeMedia() {
 	}));
 }
 
+var latencyHistory = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+sparkConfig = {height: 43, width: 100, fillColor: false, normalRangeMin: "0", normalRangeMax: "30", normalRangeColor: "#FFFFFF"};
+
 socket.onmessage = function(event) {
 	// Check string is safe to parse before parsing into JSON format
 	if (stringIsJSON(event.data)) {
@@ -238,6 +241,10 @@ socket.onmessage = function(event) {
 
 			// Put new statistics on the page
 			updateHeaderMessage();
+
+			latencyHistory.shift();
+			latencyHistory[latencyHistory.length] = latency;
+			$('.latencySparkLine').sparkline(latencyHistory, sparkConfig);
 		}
 
 		// First message from server. Set local UUID for all future communication to server
@@ -253,14 +260,14 @@ socket.onmessage = function(event) {
 				}));
 			}, 5000)
 			document.getElementById("warning").innerHTML = "<br/><br/><br/><center>Click to start.</center>"
-			warnEv = document.addEventListener("click", function() {
+			document.addEventListener("click", function() {
 				socket.send(JSON.stringify({
 					command: "joinSession",
 					token: sessionToken,
 				}));
 				hadFocus = 1;
 				document.getElementById("warning").innerHTML = ""
-				document.removeEventListener("click", warnEv)
+				document.removeEventListener("click", arguments.callee)
 				clearInterval(keepAliveBodge);
 			})
 			
