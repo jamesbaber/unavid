@@ -39,7 +39,7 @@
 			<!-- step=0.15625 for one step per pixel at 640 width -->
 			<input id="seek-range" value=0 step=0.3 type="range" oninput={seekTo(event)} ></input>
 			<br />
-			<video id="mainPlayer" playsinline data-poster="/poster.jpg" width="640">
+			<video id="mainPlayer" playsinline data-poster="/poster.jpg" width="640" oncontextmenu="return false;">
 				<source type="video/mp4" />
 				<!-- Captions are optional -->
 				<!--<track kind="captions" label="English captions" src="/path/to/captions.vtt" srclang="en" default />-->
