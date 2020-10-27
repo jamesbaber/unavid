@@ -252,15 +252,15 @@ socket.onmessage = function(event) {
 					command: "echoBodge"
 				}));
 			}, 5000)
-			document.getElementById("warning").innerHTML = "Click here to get going!"
-			warnEv = document.getElementById("warning").addEventListener("click", function() {
+			document.getElementById("warning").innerHTML = "<br/><br/><br/><center>Click to start.</center>"
+			warnEv = document.addEventListener("click", function() {
 				socket.send(JSON.stringify({
 					command: "joinSession",
 					token: sessionToken,
 				}));
 				hadFocus = 1;
 				document.getElementById("warning").innerHTML = ""
-				document.getElementById("warning").removeEventListener("click", warnEv)
+				document.removeEventListener("click", warnEv)
 				clearInterval(keepAliveBodge);
 			})
 			
